@@ -1,0 +1,73 @@
+#!/usr/bin/python3
+import sys
+
+def calc_panel(length, buffer = 10):
+    if length < 815 + buffer:
+        return [1,0,0,0]
+    elif length < 1575 + buffer:
+        return [0,1,0,0]
+    elif length < 2350 + buffer:
+        return [0,0,1,0]
+    elif length < 3100 + buffer:
+        return [0,0,0,1]
+    elif length < (1575 + 2350 + (buffer * 2)):
+        return [0,1,1,0]
+    elif length < (2350 + 2350 + (buffer * 2)):
+        return [0,0,2,0]
+    elif length < (2350 + 3100  + (buffer * 2)):
+        return [0,0,1,1]
+    elif length < (3100 + 3100 + (buffer * 2)):
+        return [0,0,0,2]
+    else:
+        offcut = length % (2350 + buffer)
+        if offcut < 750:
+            return [0,0,(length // (2350 + buffer))-1,1]
+        elif offcut < 1500:
+            return [0,0,(length // (2350 + buffer))-2,2]
+        elif offcut < (2350 + buffer):
+            return [0,0,(length // (2350 + buffer))+1,0]
+    raise Exception("The code should never get to this point")
+
+def sum(array):
+    total = 0
+    for i in array:
+        total += i
+    return total
+
+def array_sum(array1, array2):
+    new_array = []
+    if len(array1) == len(array2):
+        for i in range(len(array1)):
+            new_array.append(array1[i] + array2[i])
+        return new_array
+    else:
+        raise Exception("Arrays must be the same length to sum")
+
+def pretty_print(panel_count):
+    lengths = [815, 1575, 2350, 3100]
+    for i in range(4):
+        if panel_count[i] == 1:
+            print(f"{panel_count[i]} Panel at {lengths[i]}")
+        elif panel_count[i] > 1:
+            print(f"{panel_count[i]} Panels at {lengths[i]}")
+    print(f"{int(sum(panel_count) * 1.8) + 1} Bags of Rapid Set")
+
+def convert_to_mm(string):
+    if "m" in string:
+        return (int(float(string.replace("m","")) * 1000))
+
+    if ("." in string):
+        return (int(float(string) * 1000))
+    
+    try:
+        return int(string)
+    except:
+        raise Exception("Error converting string to mm")
+
+def main():
+    final_panel_count = [0,0,0,0]
+    for i in sys.argv[1:]:
+        final_panel_count = array_sum(calc_panel(convert_to_mm(i)), final_panel_count)
+    pretty_print(final_panel_count)
+
+main()
