@@ -1,5 +1,9 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+from josh_functions import sum
+from josh_functions import array_sum
 import sys
+import pyperclip
+
 
 def calc_panel(length, buffer = 10):
     if length < 815 + buffer:
@@ -26,31 +30,19 @@ def calc_panel(length, buffer = 10):
             return [0,0,(length // (2350 + buffer))-2,2]
         elif offcut < (2350 + buffer):
             return [0,0,(length // (2350 + buffer))+1,0]
-    raise Exception("The code should never get to this point")
-
-def sum(array):
-    total = 0
-    for i in array:
-        total += i
-    return total
-
-def array_sum(array1, array2):
-    new_array = []
-    if len(array1) == len(array2):
-        for i in range(len(array1)):
-            new_array.append(array1[i] + array2[i])
-        return new_array
-    else:
-        raise Exception("Arrays must be the same length to sum")
+    raise Exception("The code should never get to this point, calc_panel failure")
 
 def pretty_print(panel_count):
     lengths = [815, 1575, 2350, 3100]
+    string_output = ""
     for i in range(4):
         if panel_count[i] == 1:
-            print(f"{panel_count[i]} Panel at {lengths[i]}")
+            string_output += f"{panel_count[i]} Panel at {lengths[i]}\n"
         elif panel_count[i] > 1:
-            print(f"{panel_count[i]} Panels at {lengths[i]}")
-    print(f"{int(sum(panel_count) * 1.8) + 1} Bags of Rapid Set")
+            string_output += f"{panel_count[i]} Panels at {lengths[i]}\n"
+    string_output += f"{int(sum(panel_count) * 1.8) + 1} Bags of Rapid Set"
+    pyperclip.copy(string_output)
+    print(string_output)
 
 def convert_to_mm(string):
     if "m" in string:
