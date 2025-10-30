@@ -58,8 +58,24 @@ def convert_to_mm(string):
 
 def main():
     final_panel_count = [0,0,0,0]
-    for i in sys.argv[1:]:
-        final_panel_count = array_sum(calc_panel(convert_to_mm(i)), final_panel_count)
+    run_length_strings = []
+    buffer = 10
+    
+    all_args = sys.argv[1:]
+    while len(all_args) > 0:
+        current = all_args.pop(0)
+        if current[0] == '-':
+            if current == '-b' or '--buffer':
+                if len(all_args) > 0:
+                    buffer = int(all_args.pop(0))
+                    print(f"Buffer is {buffer}mm")
+                else:
+                    raise Exception("Buffer flag can't be the last argument")
+        else:
+            run_length_strings.append(current)
+
+    for i in run_length_strings:
+        final_panel_count = array_sum(calc_panel(convert_to_mm(i), buffer), final_panel_count)
     pretty_print(final_panel_count)
 
 main()
