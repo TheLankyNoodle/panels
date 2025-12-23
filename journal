@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+import os
+import subprocess
+from datetime import datetime
+from pathlib import Path
+
+
+folder_path = str(Path("~/.journal").expanduser())
+if not os.path.exists(folder_path):
+    subprocess.run(["mkdir", folder_path])
+    print(f"Creating journal at {folder_path}")
+
+now = datetime.now()
+subprocess.run(["nvim", f"{folder_path}/entry_{now.strftime("%Y-%m-%d_%H:%M:%S")}.txt"])
